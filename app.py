@@ -4,6 +4,8 @@ from extensions import db
 from controllers.usuario_controller import usuario_bp
 from controllers.brinquedo_controller import brinquedo_bp
 
+import os
+
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
