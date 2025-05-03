@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = document.getElementById('emailUsuario').value.trim();
         const msg = document.getElementById('msgUsuario');
 
-        fetch('https://projeto-mvc.onrender.com/ver_users')
+        fetch('http://127.0.0.1:5000/ver_users')
           .then((response) => response.json())
           .then((usuarios) => {
   
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
             msg.style.color = 'green';
             msg.textContent = 'Usuário adicionado com sucesso!';
 
-            fetch('https://projeto-mvc.onrender.com/usuarios', 
+            fetch('http://127.0.0.1:5000/usuarios', 
               {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
           msg.style.color = 'green';
           msg.textContent = 'Produto adicionado com sucesso!';
 
-          fetch('https://projeto-mvc.onrender.com/brinquedos', 
+          fetch('http://127.0.0.1:5000/brinquedos', 
             {
               method: 'POST',
               headers: {'Content-Type': 'application/json'},
@@ -92,19 +92,19 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Carregar e exibir usuários
   function carregarUsuarios() {
-    fetch('https://projeto-mvc.onrender.com/ver_users')
+    fetch('http://127.0.0.1:5000/ver_users')
       .then((response) => response.json())
       .then((data) => {
         const lista = document.getElementById('listaUsuarios');
         lista.innerHTML = '';
   
-        data.forEach((usuario, index) => {
+        data.forEach((usuario) => {
           const li = document.createElement('li');
 
           li.innerHTML = `
-          <span id="usuarioTexto-${index}">${usuario.nome} - ${usuario.email}</span>
-          <span id="botoes-${index}">
-            <span style="cursor:pointer; margin-left: 10px;" onclick="editarUsuario(${index})">✏️</span>
+          <span id="usuarioTexto-${usuario.nome}">${usuario.nome} - ${usuario.email}</span>
+          <span id="botoes-${usuario.nome}">
+            <span style="cursor:pointer; margin-left: 10px;" onclick="editarUsuario('${usuario.nome}')">✏️</span>
             <span style="cursor:pointer; margin-left: 10px;" onclick="excluirUsuario('${usuario.nome}')">🗑️</span>
           </span>
           `;
@@ -134,51 +134,77 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   // Editar usuário
-  function editarUsuario(index) {
-    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-    const usuario = usuarios[index];
+  function editarUsuario(nome) {
+    // const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+    fetch('http://127.0.0.1:5000/ver_users')
+      .then((response) => response.json())
+      .then((data) => {
+
+      const usuario = data.find((u) => u.nome === nome);
   
-    const spanTexto = document.getElementById(`usuarioTexto-${index}`);
-    const botoes = document.getElementById(`botoes-${index}`);
+      const spanTexto = document.getElementById(`usuarioTexto-${nome}`);
+      const botoes = document.getElementById(`botoes-${nome}`);
   
-    spanTexto.innerHTML = `
-      <input type="text" id="editNome-${index}" value="${usuario.nome}">
-      <input type="email" id="editEmail-${index}" value="${usuario.email}">
-    `;
+      spanTexto.innerHTML = `
+        <input type="text" id="editNome-${nome}" value="${usuario.nome}">
+        <input type="email" id="editEmail-${nome}" value="${usuario.email}">
+      `;
   
-    botoes.innerHTML = `
-      <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-        <span style="cursor:pointer;" onclick="salvarEdicaoUsuario(${index})">✅</span>
-        <span style="cursor:pointer;" onclick="carregarUsuarios()">❌</span>
-      </div>
-    `;
+      botoes.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+          <span style="cursor:pointer;" onclick="salvarEdicaoUsuario('${nome}')">✅</span>
+          <span style="cursor:pointer;" onclick="carregarUsuarios()">❌</span>
+        </div>
+      `;
+      });
   }
   
   // Salvar edição de usuário
-  function salvarEdicaoUsuario(index) {
-    const nomeEditado = document.getElementById(`editNome-${index}`).value.trim();
-    const emailEditado = document.getElementById(`editEmail-${index}`).value.trim();
-    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+  async function salvarEdicaoUsuario(nome) {
+    const nomeEditado = document.getElementById(`editNome-${nome}`).value.trim();
+    const emailEditado = document.getElementById(`editEmail-${nome}`).value.trim();
+
+    fetch('http://127.0.0.1:5000/ver_users')
+      .then((response) => response.json())
+      .then((usuarios) => {
   
-    // Evita duplicação após edição
-    const duplicado = usuarios.some((u, i) =>
-      i !== index &&
-      (u.nome.toLowerCase() === nomeEditado.toLowerCase() || u.email.toLowerCase() === emailEditado.toLowerCase())
-    );
+      // Evita duplicação após edição
+      const duplicado = usuarios.some((u) =>
+        (u.nome.toLowerCase() === nomeEditado.toLowerCase() 
+          || u.email.toLowerCase() === emailEditado.toLowerCase()) && u.nome !== nome
+      );
   
-    if (duplicado) {
-      alert("Nome ou email já cadastrado.");
-      return;
-    }
-  
-    usuarios[index] = { nome: nomeEditado, email: emailEditado };
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-    carregarUsuarios();
+      if (duplicado) {
+        alert("Nome ou email já cadastrado.");
+        return;
+      }
+    });
+
+    await fetch('http://127.0.0.1:5000/atualizar_user', 
+      {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({nome: nome, nome_editado: nomeEditado, email_editado: emailEditado})
+      }).then(carregarUsuarios);
   }
   
   // Excluir usuário
   async function excluirUsuario(nome) {
-    await fetch('https://projeto-mvc.onrender.com/remover_usuario', 
+    const msg = document.getElementById('msgCadastro');
+    
+    await fetch('http://127.0.0.1:5000/ver_users')
+      .then((response) => response.json())
+      .then((data) => {
+        const usuarioExistente = data.find((usuario) => usuario.nome === nome);
+        
+        if(!usuarioExistente) {
+          msg.style.color = 'red';
+          msg.textContent = 'Usuário inexistente';
+        } 
+      });
+
+    await fetch('http://127.0.0.1:5000/remover_usuario', 
     {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},

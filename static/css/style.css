@@ -82,7 +82,14 @@ body {
     color: green;
     font-weight: bold;
     text-align: center;
-  }  
+  } 
+  
+  .msg_cadastro {
+    color: green;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+  }
 
   .rodape {
     position: fixed;
