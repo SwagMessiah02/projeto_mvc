@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from models.brinquedo import Brinquedo
 from extensions import db
 
@@ -12,6 +12,58 @@ def cadastro_brinquedo():
 def ver_brinquedos():
     brinquedos = Brinquedo.query.all()
     return render_template('ver_brinquedos.html', brinquedos=brinquedos)
+
+@brinquedo_bp.route('/remover_brinquedo', methods=['DELETE'])
+def remover_brinquedo():
+    data_nome = request.get_json()
+    nome = data_nome.get('nome') 
+    brinquedo = Brinquedo.query.filter_by(nome=nome).first()
+
+    if not nome:
+        return jsonify({'erro': 'Nome não fornecido'}), 400
+
+    if not brinquedo:
+        return jsonify({'erro': 'Brinquedo não encontrado'}), 404
+
+    db.session.delete(brinquedo) 
+    db.session.commit()
+
+    return jsonify({'mensagem': f'Brinquedo {nome} removido com sucesso'}), 500
+
+@brinquedo_bp.route('/ver_brinq', methods=['GET'])
+def ver_brinq():
+    brinquedos = Brinquedo.query.all()
+
+    toys = [{
+        'id': b.id,
+        'nome': b.nome,
+        'preco': b.preco
+    } for b in brinquedos]
+
+    return jsonify(toys)
+
+@brinquedo_bp.route('/atualizar_brinquedo', methods=['PUT'])
+def atualizar_user():
+    data = request.get_json()
+
+    nome = data.get('nome') 
+    nome_editado = data.get('nome_editado')
+    preco_editado = data.get('preco_editado')
+
+    if not nome:
+        return jsonify({'erro': 'Nome não fornecido'}), 400
+    
+    brinquedo = Brinquedo.query.filter_by(nome=nome).first()
+
+    if not brinquedo:
+        return jsonify({'erro': 'Brinquedo não encontrado'}), 404
+    
+    brinquedo.nome = nome_editado
+    brinquedo.preco = preco_editado
+    
+    db.session.commit()
+
+    return jsonify({'mensagem': f'Brinquedo {nome} atualizado com sucesso'})
 
 @brinquedo_bp.route('/brinquedos', methods=['POST'])
 def salvar_brinquedo():

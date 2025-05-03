@@ -54,35 +54,38 @@ document.addEventListener("DOMContentLoaded", () => {
         const preco = document.getElementById('precoProduto').value.trim();
         const msg = document.getElementById('msgBrinquedo');
   
-        const produtos = JSON.parse(localStorage.getItem('brinquedos')) || [];
+        fetch('https://projeto-mvc.onrender.com/ver_users')
+          .then((response) => response.json())
+          .then((produtos) => {
   
-        const produtoExistente = produtos.find(
-          (p) => p.nome.toLowerCase() === nome.toLowerCase() || p.preco === preco
-        );
+          const produtoExistente = produtos.find(
+            (p) => p.nome.toLowerCase() === nome.toLowerCase() || p.preco === preco
+          );
   
-        if (produtoExistente) {
-          msg.style.color = 'red';
-          msg.textContent = 'Produto com mesmo nome ou preço já cadastrado.';
-        } else {
-          produtos.push({ nome, preco });
-          localStorage.setItem('brinquedos', JSON.stringify(produtos));
+          if (produtoExistente) {
+            msg.style.color = 'red';
+            msg.textContent = 'Produto com mesmo nome ou preço já cadastrado.';
+          } else {
+            produtos.push({ nome, preco });
+            localStorage.setItem('brinquedos', JSON.stringify(produtos));
 
-          let produto = produtos.find((p) => p.nome == nome && p.preco == preco);
+            let produto = produtos.find((p) => p.nome == nome && p.preco == preco);
   
-          msg.style.color = 'green';
-          msg.textContent = 'Produto adicionado com sucesso!';
+            msg.style.color = 'green';
+            msg.textContent = 'Produto adicionado com sucesso!';
 
-          fetch('https://projeto-mvc.onrender.com/brinquedos', 
-            {
-              method: 'POST',
-              headers: {'Content-Type': 'application/json'},
-              body: JSON.stringify({nome: produto.nome, preco: produto.preco})
-            }); 
+            fetch('https://projeto-mvc.onrender.com/brinquedos', 
+              {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({nome: produto.nome, preco: produto.preco})
+              }); 
 
-          formProduto.reset();
-        }
+            formProduto.reset();
+          }
   
-        setTimeout(() => msg.textContent = '', 3000);
+          setTimeout(() => msg.textContent = '', 3000);
+        });
       });
     }
   
@@ -95,6 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch('https://projeto-mvc.onrender.com/ver_users')
       .then((response) => response.json())
       .then((data) => {
+
         const lista = document.getElementById('listaUsuarios');
         lista.innerHTML = '';
   
@@ -116,20 +120,24 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Carregar e exibir produtos
   function carregarProdutos() {
-    const produtos = JSON.parse(localStorage.getItem('brinquedos')) || [];
-    const lista = document.getElementById('listaProdutos');
-    lista.innerHTML = '';
+    fetch('https://projeto-mvc.onrender.com/ver_brinq')
+      .then((response) => response.json())
+      .then((data) => {
+
+      const lista = document.getElementById('listaProdutos');
+      lista.innerHTML = '';
   
-    produtos.forEach((produto, index) => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <span id="produtoTexto-${index}">${produto.nome} - R$ ${produto.preco}</span>
-        <span id="botoesProduto-${index}">
-          <span style="cursor:pointer; margin-left: 10px;" onclick="editarProduto(${index})">✏️</span>
-          <span style="cursor:pointer; margin-left: 10px;" onclick="excluirProduto(${index})">🗑️</span>
-        </span>
-      `;
-      lista.appendChild(li);
+      data.forEach((produto) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span id="produtoTexto-${produto.nome}">${produto.nome} - R$ ${produto.preco}</span>
+          <span id="botoesProduto-${produto.nome}">
+            <span style="cursor:pointer; margin-left: 10px;" onclick="editarProduto('${produto.nome}')">✏️</span>
+            <span style="cursor:pointer; margin-left: 10px;" onclick="excluirProduto('${produto.nome}')">🗑️</span>
+          </span>
+        `;
+        lista.appendChild(li);
+      });
     });
   }
   
@@ -215,52 +223,81 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   // Editar produto
-  function editarProduto(index) {
-    const produtos = JSON.parse(localStorage.getItem('brinquedos')) || [];
-    const produto = produtos[index];
+  function editarProduto(nome) {
+    fetch('https://projeto-mvc.onrender.com/ver_brinq')
+      .then((response) => response.json())
+      .then((data) => {
+
+      const brinquedo = data.find((u) => u.nome === nome);
   
-    const spanTexto = document.getElementById(`produtoTexto-${index}`);
-    const botoes = document.getElementById(`botoesProduto-${index}`);
+      const spanTexto = document.getElementById(`produtoTexto-${nome}`);
+      const botoes = document.getElementById(`botoesProduto-${nome}`);
   
-    spanTexto.innerHTML = `
-      <input type="text" id="editNomeProduto-${index}" value="${produto.nome}">
-      <input type="number" id="editPrecoProduto-${index}" value="${produto.preco}">
-    `;
+      spanTexto.innerHTML = `
+        <input type="text" id="editNomeProduto-${nome}" value="${brinquedo.nome}">
+        <input type="number" id="editPrecoProduto-${nome}" value="${brinquedo.email}">
+      `;
   
-    botoes.innerHTML = `
-      <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-        <span style="cursor:pointer;" onclick="salvarEdicaoProduto(${index})">✅</span>
-        <span style="cursor:pointer;" onclick="carregarProdutos()">❌</span>
-      </div>
-    `;
+      botoes.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+          <span style="cursor:pointer;" onclick="salvarEdicaoProduto('${nome}')">✅</span>
+          <span style="cursor:pointer;" onclick="carregarProdutos()">❌</span>
+        </div>
+      `;
+      });
   }
   
   // Salvar edição de produto
-  function salvarEdicaoProduto(index) {
-    const nomeEditado = document.getElementById(`editNomeProduto-${index}`).value.trim();
-    const precoEditado = document.getElementById(`editPrecoProduto-${index}`).value.trim();
-    const produtos = JSON.parse(localStorage.getItem('brinquedos')) || [];
+  async function salvarEdicaoProduto(nome) {
+    const nomeEditado = document.getElementById(`editNomeProduto-${nome}`).value.trim();
+    const precoEditado = document.getElementById(`editPrecoProduto-${nome}`).value.trim();
+    
+    fetch('https://projeto-mvc.onrender.com/ver_brinq')
+      .then((response) => response.json())
+      .then((produtos) => {
+
+      // Evita duplicação após edição
+      const duplicado = produtos.some((p) =>
+        (p.nome.toLowerCase() === nomeEditado.toLowerCase() || p.preco === precoEditado) && p.nome !== nome
+      );
+    
+      if (duplicado) {
+        alert("Nome ou preço já cadastrado.");
+        return;
+      }
+    });
+
+    await fetch('https://projeto-mvc.onrender.com/atualizar_brinquedo', 
+      {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({nome: nome, nome_editado: nomeEditado, preco_editado: precoEditado})
+      }).then(carregarUsuarios);
   
-    // Evita duplicação após edição
-    const duplicado = produtos.some((p, i) =>
-      i !== index &&
-      (p.nome.toLowerCase() === nomeEditado.toLowerCase() || p.preco === precoEditado)
-    );
-  
-    if (duplicado) {
-      alert("Nome ou preço já cadastrado.");
-      return;
-    }
-  
-    produtos[index] = { nome: nomeEditado, preco: precoEditado };
-    localStorage.setItem('brinquedos', JSON.stringify(produtos));
     carregarProdutos();
   }
   
   // Excluir produto
-  function excluirProduto(index) {
-    const produtos = JSON.parse(localStorage.getItem('brinquedos')) || [];
-    produtos.splice(index, 1);
-    localStorage.setItem('brinquedos', JSON.stringify(produtos));
+  async function excluirProduto(nome) {
+    const msg = document.getElementById('msgCadastro');
+    
+    await fetch('https://projeto-mvc.onrender.com/ver_brinq')
+      .then((response) => response.json())
+      .then((data) => {
+        const brinquedoExistente = data.find((brinquedo) => brinquedo.nome === nome);
+        
+        if(!brinquedoExistente) {
+          msg.style.color = 'red';
+          msg.textContent = 'Brinquedo inexistente';
+        } 
+      });
+
+    await fetch('https://projeto-mvc.onrender.com/remover_brinquedo', 
+    {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({nome: nome})
+    });
+
     carregarProdutos();
   }
