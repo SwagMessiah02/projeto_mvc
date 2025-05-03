@@ -20,6 +20,9 @@ def remover_usuario():
     usuario = Usuario.query.filter_by(nome=nome).first()
 
     if not nome:
+        return jsonify({'erro': 'Nome não fornecido'}), 400
+
+    if not nome:
         return jsonify({'erro': 'Nome não fornecido'}), 404
 
     db.session.delete(usuario)
