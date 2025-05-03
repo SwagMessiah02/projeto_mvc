@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Excluir usuário
   async function excluirUsuario(nome) {
-    fetch('https://projeto-mvc.onrender.com/remover_usuario', 
+    await fetch('https://projeto-mvc.onrender.com/remover_usuario', 
     {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
