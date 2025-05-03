@@ -15,8 +15,10 @@ def ver_brinquedos():
 
 @brinquedo_bp.route('/brinquedos', methods=['POST'])
 def salvar_brinquedo():
-    nome = request.form.get('nome')
-    preco = request.form.get('preco')
+    data_name = request.get_json()
+    nome = data_name.get('nome') 
+    data_preco = request.get_json()
+    preco = data_preco.get('preco')
     if nome and preco:
         novo_brinquedo = Brinquedo(nome=nome, preco=float(preco))
         db.session.add(novo_brinquedo)

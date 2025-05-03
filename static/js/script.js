@@ -9,28 +9,42 @@ document.addEventListener("DOMContentLoaded", () => {
         const nome = document.getElementById('nomeUsuario').value.trim();
         const email = document.getElementById('emailUsuario').value.trim();
         const msg = document.getElementById('msgUsuario');
+
+        fetch('http://127.0.0.1:5000/ver_users')
+          .then((response) => response.json())
+          .then((usuarios) => {
   
-        const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+          const usuarioExistente = usuarios.find(
+            (u) => u.nome.toLowerCase() === nome.toLowerCase() || u.email.toLowerCase() === email.toLowerCase()
+          );
   
-        const usuarioExistente = usuarios.find(
-          (u) => u.nome.toLowerCase() === nome.toLowerCase() || u.email.toLowerCase() === email.toLowerCase()
-        );
+          if (usuarioExistente) {
+            msg.style.color = 'red';
+            msg.textContent = 'Usuário com mesmo nome ou email já cadastrado.';
+          } else {
+            usuarios.push({ nome, email });
+            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+            let usuario = usuarios.find((u) => u.nome == nome && u.email == email);
   
-        if (usuarioExistente) {
-          msg.style.color = 'red';
-          msg.textContent = 'Usuário com mesmo nome ou email já cadastrado.';
-        } else {
-          usuarios.push({ nome, email });
-          localStorage.setItem('usuarios', JSON.stringify(usuarios));
+            msg.style.color = 'green';
+            msg.textContent = 'Usuário adicionado com sucesso!';
+
+            fetch('http://127.0.0.1:5000/usuarios', 
+              {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({nome: usuario.nome, email: usuario.email})
+              }); 
+
+            formUsuario.reset();
+          }
   
-          msg.style.color = 'green';
-          msg.textContent = 'Usuário adicionado com sucesso!';
-          formUsuario.reset();
-        }
-  
-        setTimeout(() => msg.textContent = '', 3000);
+          setTimeout(() => msg.textContent = '', 3000);
+        });
       });
     }
+  
   
     if (formProduto) {
       formProduto.reset(); // limpa campos ao voltar
@@ -38,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         const nome = document.getElementById('nomeProduto').value.trim();
         const preco = document.getElementById('precoProduto').value.trim();
-        const msg = document.getElementById('msgProduto');
+        const msg = document.getElementById('msgBrinquedo');
   
         const produtos = JSON.parse(localStorage.getItem('brinquedos')) || [];
   
@@ -52,9 +66,19 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           produtos.push({ nome, preco });
           localStorage.setItem('brinquedos', JSON.stringify(produtos));
+
+          let produto = produtos.find((p) => p.nome == nome && p.preco == preco);
   
           msg.style.color = 'green';
           msg.textContent = 'Produto adicionado com sucesso!';
+
+          fetch('http://127.0.0.1:5000/brinquedos', 
+            {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({nome: produto.nome, preco: produto.preco})
+            }); 
+
           formProduto.reset();
         }
   
@@ -68,20 +92,25 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Carregar e exibir usuários
   function carregarUsuarios() {
-    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-    const lista = document.getElementById('listaUsuarios');
-    lista.innerHTML = '';
+    fetch('http://127.0.0.1:5000/ver_users')
+      .then((response) => response.json())
+      .then((data) => {
+        const lista = document.getElementById('listaUsuarios');
+        lista.innerHTML = '';
   
-    usuarios.forEach((usuario, index) => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <span id="usuarioTexto-${index}">${usuario.nome} - ${usuario.email}</span>
-        <span id="botoes-${index}">
-          <span style="cursor:pointer; margin-left: 10px;" onclick="editarUsuario(${index})">✏️</span>
-          <span style="cursor:pointer; margin-left: 10px;" onclick="excluirUsuario(${index})">🗑️</span>
-        </span>
-      `;
-      lista.appendChild(li);
+        data.forEach((usuario, index) => {
+          const li = document.createElement('li');
+
+          li.innerHTML = `
+          <span id="usuarioTexto-${index}">${usuario.nome} - ${usuario.email}</span>
+          <span id="botoes-${index}">
+            <span style="cursor:pointer; margin-left: 10px;" onclick="editarUsuario(${index})">✏️</span>
+            <span style="cursor:pointer; margin-left: 10px;" onclick="excluirUsuario('${usuario.nome}')">🗑️</span>
+          </span>
+          `;
+
+          lista.appendChild(li);
+        });
     });
   }
   
@@ -148,10 +177,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   // Excluir usuário
-  function excluirUsuario(index) {
-    const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-    usuarios.splice(index, 1);
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+  async function excluirUsuario(nome) {
+    await fetch('http://127.0.0.1:5000/remover_usuario', 
+    {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({nome: nome})
+    });
+
     carregarUsuarios();
   }
   

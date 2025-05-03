@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for
 from models.usuario import Usuario
 from extensions import db
 
@@ -13,10 +13,38 @@ def ver_usuarios():
     usuarios = Usuario.query.all()
     return render_template('ver_usuarios.html', usuarios=usuarios)
 
+@usuario_bp.route('/remover_usuario', methods=['DELETE'])
+def remover_usuario():
+    data_nome = request.get_json()
+    nome = data_nome.get('nome') 
+    usuario = Usuario.query.filter_by(nome=nome).first()
+
+    if not nome:
+        return jsonify({'erro': 'Nome não fornecido'}), 404
+
+    db.session.delete(usuario)
+    db.session.commit()
+
+    return jsonify({'mensagem': f'Usuário {nome} removido com sucesso'}), 500
+
+@usuario_bp.route('/ver_users', methods=['GET'])
+def ver_users():
+    usuarios = Usuario.query.all()
+
+    users = [{
+        'id': u.id,
+        'nome': u.nome,
+        'email': u.email
+    } for u in usuarios]
+
+    return jsonify(users)
+
 @usuario_bp.route('/usuarios', methods=['POST'])
 def salvar_usuario():
-    nome = request.form.get('nome')
-    email = request.form.get('email')
+    data_name = request.get_json()
+    nome = data_name.get('nome')
+    data_email = request.get_json()
+    email = data_email.get('email')
     if nome and email:
         novo_usuario = Usuario(nome=nome, email=email)
         db.session.add(novo_usuario)
