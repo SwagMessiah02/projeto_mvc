@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = document.getElementById('emailUsuario').value.trim();
         const msg = document.getElementById('msgUsuario');
 
-        fetch('http://127.0.0.1:5000/ver_users')
+        fetch('http://projeto-mvc.onrender.com/ver_users')
           .then((response) => response.json())
           .then((usuarios) => {
   
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
             msg.style.color = 'green';
             msg.textContent = 'Usuário adicionado com sucesso!';
 
-            fetch('http://127.0.0.1:5000/usuarios', 
+            fetch('http://projeto-mvc.onrender.com/usuarios', 
               {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
           msg.style.color = 'green';
           msg.textContent = 'Produto adicionado com sucesso!';
 
-          fetch('http://127.0.0.1:5000/brinquedos', 
+          fetch('http://projeto-mvc.onrender.com/brinquedos', 
             {
               method: 'POST',
               headers: {'Content-Type': 'application/json'},
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Carregar e exibir usuários
   function carregarUsuarios() {
-    fetch('http://127.0.0.1:5000/ver_users')
+    fetch('http://projeto-mvc.onrender.com/ver_users')
       .then((response) => response.json())
       .then((data) => {
         const lista = document.getElementById('listaUsuarios');
@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function editarUsuario(nome) {
     // const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
 
-    fetch('http://127.0.0.1:5000/ver_users')
+    fetch('http://projeto-mvc.onrender.com/ver_users')
       .then((response) => response.json())
       .then((data) => {
 
@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const nomeEditado = document.getElementById(`editNome-${nome}`).value.trim();
     const emailEditado = document.getElementById(`editEmail-${nome}`).value.trim();
 
-    fetch('http://127.0.0.1:5000/ver_users')
+    fetch('http://projeto-mvc.onrender.com/ver_users')
       .then((response) => response.json())
       .then((usuarios) => {
   
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    await fetch('http://127.0.0.1:5000/atualizar_user', 
+    await fetch('http://projeto-mvc.onrender.com/atualizar_user', 
       {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
@@ -193,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function excluirUsuario(nome) {
     const msg = document.getElementById('msgCadastro');
     
-    await fetch('http://127.0.0.1:5000/ver_users')
+    await fetch('http://projeto-mvc.onrender.com/ver_users')
       .then((response) => response.json())
       .then((data) => {
         const usuarioExistente = data.find((usuario) => usuario.nome === nome);
@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } 
       });
 
-    await fetch('http://127.0.0.1:5000/remover_usuario', 
+    await fetch('http://projeto-mvc.onrender.com/remover_usuario', 
     {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
