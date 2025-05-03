@@ -68,8 +68,8 @@ def atualizar_user():
 
 @usuario_bp.route('/usuarios', methods=['POST'])
 def salvar_usuario():
-    data_name = request.get_json()
-    nome = data_name.get('nome')
+    data = request.get_json()
+    nome = data.get('nome')
     data_email = request.get_json()
     email = data_email.get('email')
     if nome and email:
