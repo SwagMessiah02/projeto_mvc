@@ -258,6 +258,8 @@ document.addEventListener("DOMContentLoaded", () => {
         } 
       });
 
+      carregarUsuarios();
+
     await fetch('https://projeto-mvc.onrender.com/remover_usuario', 
     {
       method: 'DELETE',
