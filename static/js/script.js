@@ -258,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } 
       });
 
-      carregarUsuarios();
+      setTimeout(() => msg.textContent = '', 3000);
 
     await fetch('https://projeto-mvc.onrender.com/remover_usuario', 
     {
