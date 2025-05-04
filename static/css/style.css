@@ -1,4 +1,4 @@
-body {
+  body {
     height: 90vh;
     margin: 0;
     padding: 0;
@@ -8,13 +8,53 @@ body {
     font-family: Arial, sans-serif;
   }
 
-  .container {
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 30px;
-    border-radius: 12px;
-    max-width: 500px;
+  body {
+    background: linear-gradient(135deg, #e0f7fa, #90caf9);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .container button {
+    margin: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    background-color: #3597ff;
+    color: white;
+    padding: 15px;
+    cursor: pointer;
     width: 100%;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .container button:hover {
+    background-color: #1e78e0;
+    transform: translateY(-2px);
+  }
+
+  .container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+  }
+
+  .container {
+    background-color: #ffffffdd;
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
   }
     
   h1 {
@@ -43,14 +83,70 @@ body {
     font-size: 15px;
     font-weight: bold;
   }
+    
+  button:hover {
+    background-color: #00458f;
+  }
+
+  button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #3597ff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  button:hover {
+    background-color: #1e78e0;
+    transform: translateY(-2px);
+  }
 
   .voltar{
     margin: 15px 180px;
     width: 25%;
   }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 10S;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideFadeIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+
+  ul::-webkit-scrollbar {
+    width: 8px;
+  }
     
-  button:hover {
-    background-color: #00458f;
+  ul::-webkit-scrollbar-thumb {
+    background-color: #3597ff;
+    border-radius: 10px;
   }
     
   ul {
@@ -61,14 +157,45 @@ body {
     overflow-y: auto; 
     border-radius: 8px;
   }
-    
-  ul::-webkit-scrollbar {
-    width: 8px;
-  }
-    
-  ul::-webkit-scrollbar-thumb {
-    background-color: #3597ff;
+
+  ul#listaBrinquedos {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    max-height: 300px;
+    overflow-y: auto;
     border-radius: 10px;
+    background: #f1f8ff;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  ul#listaBrinquedos li {
+    background: #d7eafd;
+    margin: 10px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    animation: fadeIn 0.4s ease-in-out;
+  }
+
+  ul#listaUsuarios {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    max-height: 300px;
+    overflow-y: auto;
+    border-radius: 10px;
+    background: #f1f8ff;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  ul#listaUsuarios li {
+    background: #d7eafd;
+    margin: 10px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    animation: fadeIn 0.4s ease-in-out;
   }
     
   li {
@@ -89,22 +216,6 @@ body {
     font-weight: bold;
     text-align: center;
     margin-bottom: 20px;
-  }
-
-  @keyframes slideFadeIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-3px);
-    }
   }
 
   @media (max-width: 600px) {
