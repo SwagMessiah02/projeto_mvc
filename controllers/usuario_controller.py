@@ -13,6 +13,30 @@ def ver_usuarios():
     usuarios = Usuario.query.all()
     return render_template('ver_usuarios.html', usuarios=usuarios)
 
+@usuario_bp.route('/usuarios', methods=['POST'])
+def salvar_usuario():
+    data = request.get_json()
+    nome = data.get('nome')
+    data_email = request.get_json()
+    email = data_email.get('email')
+    if nome and email:
+        novo_usuario = Usuario(nome=nome, email=email)
+        db.session.add(novo_usuario)
+        db.session.commit()
+    return redirect(url_for('usuario.ver_usuarios'))
+
+@usuario_bp.route('/get_usuarios', methods=['GET'])
+def get_usuarios():
+    usuarios = Usuario.query.all()
+
+    users = [{
+        'id': u.id,
+        'nome': u.nome,
+        'email': u.email
+    } for u in usuarios]
+
+    return jsonify(users)
+
 @usuario_bp.route('/remover_usuario', methods=['DELETE'])
 def remover_usuario():
     data_nome = request.get_json()
@@ -30,19 +54,7 @@ def remover_usuario():
 
     return jsonify({'mensagem': f'Usuário {nome} removido com sucesso'}), 500
 
-@usuario_bp.route('/ver_users', methods=['GET'])
-def ver_users():
-    usuarios = Usuario.query.all()
-
-    users = [{
-        'id': u.id,
-        'nome': u.nome,
-        'email': u.email
-    } for u in usuarios]
-
-    return jsonify(users)
-
-@usuario_bp.route('/atualizar_user', methods=['PUT'])
+@usuario_bp.route('/atualizar_usuario', methods=['PUT'])
 def atualizar_user():
     data = request.get_json()
 
@@ -64,16 +76,3 @@ def atualizar_user():
     db.session.commit()
 
     return jsonify({'mensagem': f'Usuário {nome} atualizado com sucesso'})
-   
-
-@usuario_bp.route('/usuarios', methods=['POST'])
-def salvar_usuario():
-    data = request.get_json()
-    nome = data.get('nome')
-    data_email = request.get_json()
-    email = data_email.get('email')
-    if nome and email:
-        novo_usuario = Usuario(nome=nome, email=email)
-        db.session.add(novo_usuario)
-        db.session.commit()
-    return redirect(url_for('usuario.ver_usuarios'))

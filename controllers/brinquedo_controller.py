@@ -13,6 +13,30 @@ def ver_brinquedos():
     brinquedos = Brinquedo.query.all()
     return render_template('ver_brinquedos.html', brinquedos=brinquedos)
 
+@brinquedo_bp.route('/brinquedos', methods=['POST'])
+def salvar_brinquedo():
+    data_name = request.get_json()
+    nome = data_name.get('nome') 
+    data_preco = request.get_json()
+    preco = data_preco.get('preco')
+    if nome and preco:
+        novo_brinquedo = Brinquedo(nome=nome, preco=float(preco))
+        db.session.add(novo_brinquedo)
+        db.session.commit()
+    return redirect(url_for('brinquedo.ver_brinquedos'))
+
+@brinquedo_bp.route('/get_brinquedos', methods=['GET'])
+def get_brinquedos():
+    brinquedos = Brinquedo.query.all()
+
+    brinquedos_ = [{
+        'id': b.id,
+        'nome': b.nome,
+        'preco': b.preco
+    } for b in brinquedos]
+
+    return jsonify(brinquedos_)
+
 @brinquedo_bp.route('/remover_brinquedo', methods=['DELETE'])
 def remover_brinquedo():
     data_nome = request.get_json()
@@ -29,18 +53,6 @@ def remover_brinquedo():
     db.session.commit()
 
     return jsonify({'mensagem': f'Brinquedo {nome} removido com sucesso'}), 500
-
-@brinquedo_bp.route('/ver_brinq', methods=['GET'])
-def ver_brinq():
-    brinquedos = Brinquedo.query.all()
-
-    toys = [{
-        'id': b.id,
-        'nome': b.nome,
-        'preco': b.preco
-    } for b in brinquedos]
-
-    return jsonify(toys)
 
 @brinquedo_bp.route('/atualizar_brinquedo', methods=['PUT'])
 def atualizar_user():
@@ -64,15 +76,3 @@ def atualizar_user():
     db.session.commit()
 
     return jsonify({'mensagem': f'Brinquedo {nome} atualizado com sucesso'})
-
-@brinquedo_bp.route('/brinquedos', methods=['POST'])
-def salvar_brinquedo():
-    data_name = request.get_json()
-    nome = data_name.get('nome') 
-    data_preco = request.get_json()
-    preco = data_preco.get('preco')
-    if nome and preco:
-        novo_brinquedo = Brinquedo(nome=nome, preco=float(preco))
-        db.session.add(novo_brinquedo)
-        db.session.commit()
-    return redirect(url_for('brinquedo.ver_brinquedos'))

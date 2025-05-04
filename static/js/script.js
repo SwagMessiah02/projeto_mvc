@@ -3,14 +3,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const formProduto = document.getElementById('formProduto');
   
     if (formUsuario) {
-      formUsuario.reset(); // limpa campos ao voltar
+      formUsuario.reset(); 
       formUsuario.addEventListener('submit', function (e) {
         e.preventDefault();
         const nome = document.getElementById('nomeUsuario').value.trim();
         const email = document.getElementById('emailUsuario').value.trim();
         const msg = document.getElementById('msgUsuario');
 
-        fetch('https://projeto-mvc.onrender.com/ver_users')
+        fetch('http://127.0.0.1:5000/get_usuarios')
           .then((response) => response.json())
           .then((usuarios) => {
   
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
             msg.style.color = 'green';
             msg.textContent = 'Usuário adicionado com sucesso!';
 
-            fetch('https://projeto-mvc.onrender.com/usuarios', 
+            fetch('http://127.0.0.1:5000/usuarios', 
               {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -45,16 +45,15 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   
-  
     if (formProduto) {
-      formProduto.reset(); // limpa campos ao voltar
+      formProduto.reset(); 
       formProduto.addEventListener('submit', function (e) {
         e.preventDefault();
         const nome = document.getElementById('nomeProduto').value.trim();
         const preco = document.getElementById('precoProduto').value.trim();
         const msg = document.getElementById('msgBrinquedo');
   
-        fetch('https://projeto-mvc.onrender.com/ver_users')
+        fetch('http://127.0.0.1:5000/get_usuarios')
           .then((response) => response.json())
           .then((produtos) => {
   
@@ -74,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
             msg.style.color = 'green';
             msg.textContent = 'Produto adicionado com sucesso!';
 
-            fetch('https://projeto-mvc.onrender.com/brinquedos', 
+            fetch('http://127.0.0.1:5000/brinquedos', 
               {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -92,10 +91,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.getElementById('listaUsuarios')) carregarUsuarios();
     if (document.getElementById('listaProdutos')) carregarProdutos();
   });
-  
-  // Carregar e exibir usuários
+
   function carregarUsuarios() {
-    fetch('https://projeto-mvc.onrender.com/ver_users')
+    fetch('http://127.0.0.1:5000/get_usuarios')
       .then((response) => response.json())
       .then((data) => {
 
@@ -120,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Carregar e exibir produtos
   function carregarProdutos() {
-    fetch('https://projeto-mvc.onrender.com/ver_brinq')
+    fetch('http://127.0.0.1:5000/get_brinquedos')
       .then((response) => response.json())
       .then((data) => {
 
@@ -141,11 +139,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   
-  // Editar usuário
   function editarUsuario(nome) {
-    // const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-    fetch('https://projeto-mvc.onrender.com/ver_users')
+    fetch('http://127.0.0.1:5000/get_usuarios')
       .then((response) => response.json())
       .then((data) => {
 
@@ -167,64 +162,9 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       });
   }
-  
-  // Salvar edição de usuário
-  async function salvarEdicaoUsuario(nome) {
-    const nomeEditado = document.getElementById(`editNome-${nome}`).value.trim();
-    const emailEditado = document.getElementById(`editEmail-${nome}`).value.trim();
 
-    fetch('https://projeto-mvc.onrender.com/ver_users')
-      .then((response) => response.json())
-      .then((usuarios) => {
-  
-      // Evita duplicação após edição
-      const duplicado = usuarios.some((u) =>
-        (u.nome.toLowerCase() === nomeEditado.toLowerCase() 
-          || u.email.toLowerCase() === emailEditado.toLowerCase()) && u.nome !== nome
-      );
-  
-      if (duplicado) {
-        alert("Nome ou email já cadastrado.");
-        return;
-      }
-    });
-
-    await fetch('https://projeto-mvc.onrender.com/atualizar_user', 
-      {
-        method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({nome: nome, nome_editado: nomeEditado, email_editado: emailEditado})
-      }).then(carregarUsuarios);
-  }
-  
-  // Excluir usuário
-  async function excluirUsuario(nome) {
-    const msg = document.getElementById('msgCadastro');
-    
-    await fetch('https://projeto-mvc.onrender.com/ver_users')
-      .then((response) => response.json())
-      .then((data) => {
-        const usuarioExistente = data.find((usuario) => usuario.nome === nome);
-        
-        if(!usuarioExistente) {
-          msg.style.color = 'red';
-          msg.textContent = 'Usuário inexistente';
-        } 
-      });
-
-    await fetch('https://projeto-mvc.onrender.com/remover_usuario', 
-    {
-      method: 'DELETE',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({nome: nome})
-    });
-
-    carregarUsuarios();
-  }
-  
-  // Editar produto
   function editarProduto(nome) {
-    fetch('https://projeto-mvc.onrender.com/ver_brinq')
+    fetch('http://127.0.0.1:5000/get_brinquedos')
       .then((response) => response.json()) 
       .then((data) => {
 
@@ -247,16 +187,48 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
   
-  // Salvar edição de produto
+  async function salvarEdicaoUsuario(nome) {
+    const nomeEditado = document.getElementById(`editNome-${nome}`).value.trim();
+    const emailEditado = document.getElementById(`editEmail-${nome}`).value.trim();
+
+    fetch('http://127.0.0.1:5000/get_usuarios')
+      .then((response) => response.json())
+      .then((usuarios) => {
+  
+      const duplicado = usuarios.some((u) =>
+        (u.nome.toLowerCase() === nomeEditado.toLowerCase() 
+          || u.email.toLowerCase() === emailEditado.toLowerCase()) && u.nome !== nome
+      );
+  
+      if (duplicado) {
+        alert("Nome ou email já cadastrado.");
+        return;
+      }
+    });
+
+    await fetch('http://127.0.0.1:5000/atualizar_usuario', 
+      {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(
+          {
+            nome: nome, 
+            nome_editado: nomeEditado, 
+            email_editado: emailEditado
+          })
+      });
+
+      carregarUsuarios();
+  }
+
   async function salvarEdicaoProduto(nome) {
     const nomeEditado = document.getElementById(`editNomeProduto-${nome}`).value.trim();
     const precoEditado = document.getElementById(`editPrecoProduto-${nome}`).value.trim();
     
-    fetch('https://projeto-mvc.onrender.com/ver_brinq')
+    fetch('http://127.0.0.1:5000/get_brinquedos')
       .then((response) => response.json())
       .then((produtos) => {
 
-      // Evita duplicação após edição
       const duplicado = produtos.some((p) =>
         (p.nome.toLowerCase() === nomeEditado.toLowerCase() || p.preco === precoEditado) && p.nome !== nome
       );
@@ -267,21 +239,50 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    await fetch('https://projeto-mvc.onrender.com/atualizar_brinquedo', 
+    await fetch('http://127.0.0.1:5000/atualizar_brinquedo', 
       {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({nome: nome, nome_editado: nomeEditado, preco_editado: precoEditado})
-      }).then(carregarUsuarios);
+        body: JSON.stringify(
+          {
+           nome: nome, 
+           nome_editado: nomeEditado, 
+           preco_editado: precoEditado
+          }
+        )
+      });
   
-    carregarProdutos();
+      carregarProdutos();
   }
   
-  // Excluir produto
+  async function excluirUsuario(nome) {
+    const msg = document.getElementById('msgCadastro');
+    
+    await fetch('http://127.0.0.1:5000/get_usuarios')
+      .then((response) => response.json())
+      .then((data) => {
+        const usuarioExistente = data.find((usuario) => usuario.nome === nome);
+          
+        if(!usuarioExistente) {
+          msg.style.color = 'red';
+          msg.textContent = 'Usuário inexistente';
+        } 
+      });
+
+    await fetch('http://127.0.0.1:5000/remover_usuario', 
+    {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({nome: nome})
+    });
+
+    carregarUsuarios();
+  }
+  
   async function excluirProduto(nome) {
     const msg = document.getElementById('msgCadastro');
     
-    await fetch('https://projeto-mvc.onrender.com/ver_brinq')
+    await fetch('http://127.0.0.1:5000/get_brinquedos')
       .then((response) => response.json())
       .then((data) => {
         const brinquedoExistente = data.find((brinquedo) => brinquedo.nome === nome);
@@ -292,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } 
       });
 
-    await fetch('https://projeto-mvc.onrender.com/remover_brinquedo', 
+    await fetch('http://127.0.0.1:5000/remover_brinquedo', 
     {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
