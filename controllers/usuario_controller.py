@@ -4,11 +4,11 @@ from extensions import db
 
 usuario_bp = Blueprint('usuario', __name__)
 
-@usuario_bp.route('/usuarios')
+@usuario_bp.route('/usuarios', methods=['GET'])
 def cadastro_usuario():
     return render_template('usuarios.html')
 
-@usuario_bp.route('/ver_usuarios')
+@usuario_bp.route('/ver_usuarios', methods=['GET'])
 def ver_usuarios():
     usuarios = Usuario.query.all()
     return render_template('ver_usuarios.html', usuarios=usuarios)

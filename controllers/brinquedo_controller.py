@@ -4,11 +4,11 @@ from extensions import db
 
 brinquedo_bp = Blueprint('brinquedo', __name__)
 
-@brinquedo_bp.route('/brinquedos')
+@brinquedo_bp.route('/brinquedos', methods=['GET'])
 def cadastro_brinquedo():
     return render_template('brinquedos.html')
 
-@brinquedo_bp.route('/ver_brinquedos')
+@brinquedo_bp.route('/ver_brinquedos', methods=['GET'])
 def ver_brinquedos():
     brinquedos = Brinquedo.query.all()
     return render_template('ver_brinquedos.html', brinquedos=brinquedos)
