@@ -59,12 +59,12 @@ document.addEventListener("DOMContentLoaded", () => {
           .then((produtos) => {
   
           const produtoExistente = produtos.find(
-            (p) => p.nome.toLowerCase() === nome.toLowerCase() || p.preco === preco
+            (p) => p.nome.toLowerCase() === nome.toLowerCase()
           );
   
           if (produtoExistente) {
             msg.style.color = 'red';
-            msg.textContent = 'Produto com mesmo nome ou preço já cadastrado.';
+            msg.textContent = 'Produto com mesmo nome já cadastrado.';
           } else {
             produtos.push({ nome, preco });
             localStorage.setItem('brinquedos', JSON.stringify(produtos));
@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Editar produto
   function editarProduto(nome) {
     fetch('https://projeto-mvc.onrender.com/ver_brinq')
-      .then((response) => response.json())
+      .then((response) => response.json()) 
       .then((data) => {
 
       const brinquedo = data.find((u) => u.nome === nome);
