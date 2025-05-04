@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const formUsuario = document.getElementById('formUsuario');
-    const formProduto = document.getElementById('formProduto');
+    const formBrinquedo = document.getElementById('formBrinquedo');
   
     if (formUsuario) {
       formUsuario.reset(); 
@@ -22,11 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
             msg.style.color = 'red';
             msg.textContent = 'Usuário com mesmo nome ou email já cadastrado.';
           } else {
-            usuarios.push({ nome, email });
-            localStorage.setItem('usuarios', JSON.stringify(usuarios));
-
-            let usuario = usuarios.find((u) => u.nome == nome && u.email == email);
-  
             msg.style.color = 'green';
             msg.textContent = 'Usuário adicionado com sucesso!';
 
@@ -34,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
               {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({nome: usuario.nome, email: usuario.email})
+                body: JSON.stringify({nome: nome, email: email})
               }); 
 
             formUsuario.reset();
@@ -45,42 +40,37 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   
-    if (formProduto) {
-      formProduto.reset(); 
-      formProduto.addEventListener('submit', function (e) {
+    if (formBrinquedo) {
+      formBrinquedo.reset(); 
+      formBrinquedo.addEventListener('submit', function (e) {
         e.preventDefault();
-        const nome = document.getElementById('nomeProduto').value.trim();
-        const preco = document.getElementById('precoProduto').value.trim();
+        const nome = document.getElementById('nomeBrinquedo').value.trim();
+        const preco = document.getElementById('precoBrinquedo').value.trim();
         const msg = document.getElementById('msgBrinquedo');
   
         fetch('http://127.0.0.1:5000/get_usuarios')
           .then((response) => response.json())
-          .then((produtos) => {
+          .then((brinquedos) => {
   
-          const produtoExistente = produtos.find(
+          const brinquedoExistente = brinquedos.find(
             (p) => p.nome.toLowerCase() === nome.toLowerCase()
           );
   
-          if (produtoExistente) {
+          if (brinquedoExistente) {
             msg.style.color = 'red';
-            msg.textContent = 'Produto com mesmo nome já cadastrado.';
+            msg.textContent = 'Brinquedo com mesmo nome já cadastrado.';
           } else {
-            produtos.push({ nome, preco });
-            localStorage.setItem('brinquedos', JSON.stringify(produtos));
-
-            let produto = produtos.find((p) => p.nome == nome && p.preco == preco);
-  
             msg.style.color = 'green';
-            msg.textContent = 'Produto adicionado com sucesso!';
+            msg.textContent = 'Brinquedo adicionado com sucesso!';
 
             fetch('http://127.0.0.1:5000/brinquedos', 
               {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({nome: produto.nome, preco: produto.preco})
+                body: JSON.stringify({nome: nome, preco: preco})
               }); 
 
-            formProduto.reset();
+            formBrinquedo.reset();
           }
   
           setTimeout(() => msg.textContent = '', 3000);
@@ -89,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   
     if (document.getElementById('listaUsuarios')) carregarUsuarios();
-    if (document.getElementById('listaProdutos')) carregarProdutos();
+    if (document.getElementById('listaBrinquedos')) carregarBrinquedos();
   });
 
   function carregarUsuarios() {
@@ -116,22 +106,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   
-  // Carregar e exibir produtos
-  function carregarProdutos() {
+  function carregarBrinquedos() {
     fetch('http://127.0.0.1:5000/get_brinquedos')
       .then((response) => response.json())
       .then((data) => {
 
-      const lista = document.getElementById('listaProdutos');
+      const lista = document.getElementById('listaBrinquedos');
       lista.innerHTML = '';
   
-      data.forEach((produto) => {
+      data.forEach((brinquedo) => {
         const li = document.createElement('li');
         li.innerHTML = `
-          <span id="produtoTexto-${produto.nome}">${produto.nome} - R$ ${produto.preco}</span>
-          <span id="botoesProduto-${produto.nome}">
-            <span style="cursor:pointer; margin-left: 10px;" onclick="editarProduto('${produto.nome}')">✏️</span>
-            <span style="cursor:pointer; margin-left: 10px;" onclick="excluirProduto('${produto.nome}')">🗑️</span>
+          <span id="brinquedoTexto-${brinquedo.nome}">${brinquedo.nome} - R$ ${brinquedo.preco}</span>
+          <span id="botoesBrinquedo-${brinquedo.nome}">
+            <span style="cursor:pointer; margin-left: 10px;" onclick="editarBrinquedo('${brinquedo.nome}')">✏️</span>
+            <span style="cursor:pointer; margin-left: 10px;" onclick="excluirBrinquedo('${brinquedo.nome}')">🗑️</span>
           </span>
         `;
         lista.appendChild(li);
@@ -163,25 +152,25 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  function editarProduto(nome) {
+  function editarBrinquedo(nome) {
     fetch('http://127.0.0.1:5000/get_brinquedos')
       .then((response) => response.json()) 
       .then((data) => {
 
       const brinquedo = data.find((u) => u.nome === nome);
   
-      const spanTexto = document.getElementById(`produtoTexto-${nome}`);
-      const botoes = document.getElementById(`botoesProduto-${nome}`);
+      const spanTexto = document.getElementById(`brinquedoTexto-${nome}`);
+      const botoes = document.getElementById(`botoesBrinquedo-${nome}`);
   
       spanTexto.innerHTML = `
-        <input type="text" id="editNomeProduto-${nome}" value="${brinquedo.nome}">
-        <input type="number" id="editPrecoProduto-${nome}" value="${brinquedo.email}">
+        <input type="text" id="editNomeBrinquedo-${nome}" value="${brinquedo.nome}">
+        <input type="number" id="editPrecoBrinquedo-${nome}" value="${brinquedo.email}">
       `;
   
       botoes.innerHTML = `
         <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-          <span style="cursor:pointer;" onclick="salvarEdicaoProduto('${nome}')">✅</span>
-          <span style="cursor:pointer;" onclick="carregarProdutos()">❌</span>
+          <span style="cursor:pointer;" onclick="salvarEdicaoBrinquedo('${nome}')">✅</span>
+          <span style="cursor:pointer;" onclick="carregarBrinquedos()">❌</span>
         </div>
       `;
       });
@@ -221,15 +210,15 @@ document.addEventListener("DOMContentLoaded", () => {
       carregarUsuarios();
   }
 
-  async function salvarEdicaoProduto(nome) {
-    const nomeEditado = document.getElementById(`editNomeProduto-${nome}`).value.trim();
-    const precoEditado = document.getElementById(`editPrecoProduto-${nome}`).value.trim();
+  async function salvarEdicaoBrinquedo(nome) {
+    const nomeEditado = document.getElementById(`editNomeBrinquedo-${nome}`).value.trim();
+    const precoEditado = document.getElementById(`editPrecoBrinquedo-${nome}`).value.trim();
     
     fetch('http://127.0.0.1:5000/get_brinquedos')
       .then((response) => response.json())
-      .then((produtos) => {
+      .then((brinquedos) => {
 
-      const duplicado = produtos.some((p) =>
+      const duplicado = brinquedos.some((p) =>
         (p.nome.toLowerCase() === nomeEditado.toLowerCase() || p.preco === precoEditado) && p.nome !== nome
       );
     
@@ -251,8 +240,8 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         )
       });
-  
-      carregarProdutos();
+
+      carregarBrinquedos();
   }
   
   async function excluirUsuario(nome) {
@@ -279,7 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
     carregarUsuarios();
   }
   
-  async function excluirProduto(nome) {
+  async function excluirBrinquedo(nome) {
     const msg = document.getElementById('msgCadastro');
     
     await fetch('http://127.0.0.1:5000/get_brinquedos')
@@ -300,5 +289,5 @@ document.addEventListener("DOMContentLoaded", () => {
       body: JSON.stringify({nome: nome})
     });
 
-    carregarProdutos();
+    carregarBrinquedos();
   }
