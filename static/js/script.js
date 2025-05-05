@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((response) => response.json())
       .then((usuarios) => {
   
-      const duplicado = usuarios.some((u) =>
+      var duplicado = usuarios.some((u) =>
         (u.nome.toLowerCase() === nomeEditado.toLowerCase() 
           || u.email.toLowerCase() === emailEditado.toLowerCase()) && u.nome !== nome
       );
@@ -192,11 +192,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (duplicado) {
         alert("Nome ou email já cadastrado.");
         return;
+      } else {
+        
       }
     });
 
-    await fetch('https://projeto-mvc.onrender.com/atualizar_usuario', 
-      {
+    if(!duplicado) {
+      await fetch('https://projeto-mvc.onrender.com/atualizar_usuario', 
+        {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(
@@ -206,8 +209,9 @@ document.addEventListener("DOMContentLoaded", () => {
             email_editado: emailEditado
           })
       });
+    }
 
-      carregarUsuarios();
+    carregarUsuarios();
   }
 
   async function salvarEdicaoBrinquedo(nome) {
