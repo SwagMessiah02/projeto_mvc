@@ -11,7 +11,7 @@
     <h1>Cadastro de Brinquedos</h1>
     <form id="formBrinquedo">
       <input type="text" id="nomeBrinquedo" placeholder="Nome do Brinquedo" required>
-      <input type="number" id="precoBrinquedo" placeholder="Preço" required>
+      <input type="number" step="0.05" min="0.00" id="precoBrinquedo" placeholder="Preço R$" required>
       <button type="submit">Salvar</button>
       <button onclick="location.href='/ver_brinquedos'">Ver Brinquedos</button>
     </form>
@@ -20,3 +20,4 @@
   </div>  
 </body>
 </html>
+  

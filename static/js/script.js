@@ -10,10 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = document.getElementById('emailUsuario').value.trim();
         const msg = document.getElementById('msgUsuario');
 
-        fetch('http://127.0.0.1:5000/get_usuarios')
+        fetch('https://projeto-mvc.onrender.com/get_usuarios')
           .then((response) => response.json())
           .then((usuarios) => {
-  
+
           const usuarioExistente = usuarios.find(
             (u) => u.nome.toLowerCase() === nome.toLowerCase() || u.email.toLowerCase() === email.toLowerCase()
           );
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
             msg.style.color = 'green';
             msg.textContent = 'Usuário adicionado com sucesso!';
 
-            fetch('http://127.0.0.1:5000/usuarios', 
+            fetch('https://projeto-mvc.onrender.com/usuarios', 
               {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const preco = document.getElementById('precoBrinquedo').value.trim();
         const msg = document.getElementById('msgBrinquedo');
   
-        fetch('http://127.0.0.1:5000/get_usuarios') 
+        fetch('https://projeto-mvc.onrender.com/get_usuarios') 
           .then((response) => response.json())
           .then((brinquedos) => {
   
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
             msg.style.color = 'green';
             msg.textContent = 'Brinquedo adicionado com sucesso!';
 
-            fetch('http://127.0.0.1:5000/brinquedos', 
+            fetch('https://projeto-mvc.onrender.com/brinquedos', 
               {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function carregarUsuarios() {
-    fetch('http://127.0.0.1:5000/get_usuarios')
+    fetch('https://projeto-mvc.onrender.com/get_usuarios')
       .then((response) => response.json())
       .then((data) => {
 
@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   function carregarBrinquedos() {
-    fetch('http://127.0.0.1:5000/get_brinquedos')
+    fetch('https://projeto-mvc.onrender.com/get_brinquedos')
       .then((response) => response.json())
       .then((data) => {
 
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   function editarUsuario(nome) {
-    fetch('http://127.0.0.1:5000/get_usuarios')
+    fetch('https://projeto-mvc.onrender.com/get_usuarios')
       .then((response) => response.json())
       .then((data) => {
 
@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function editarBrinquedo(nome) {
-    fetch('http://127.0.0.1:5000/get_brinquedos')
+    fetch('https://projeto-mvc.onrender.com/get_brinquedos')
       .then((response) => response.json()) 
       .then((data) => {
 
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <input type="text" id="editNomeBrinquedo-${nome}" value="${brinquedo.nome}">
         <input type="number" id="editPrecoBrinquedo-${nome}" value="${brinquedo.email}">
       `;
-  
+ 
       botoes.innerHTML = `
         <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
           <span style="cursor:pointer;" onclick="salvarEdicaoBrinquedo('${nome}')">✅</span>
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const nomeEditado = document.getElementById(`editNome-${nome}`).value.trim();
     const emailEditado = document.getElementById(`editEmail-${nome}`).value.trim();
 
-    fetch('http://127.0.0.1:5000/get_usuarios')
+    fetch('https://projeto-mvc.onrender.com/get_usuarios')
       .then((response) => response.json())
       .then((usuarios) => {
   
@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    await fetch('http://127.0.0.1:5000/atualizar_usuario', 
+    await fetch('https://projeto-mvc.onrender.com/atualizar_usuario', 
       {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const nomeEditado = document.getElementById(`editNomeBrinquedo-${nome}`).value.trim();
     const precoEditado = document.getElementById(`editPrecoBrinquedo-${nome}`).value.trim();
     
-    fetch('http://127.0.0.1:5000/get_brinquedos')
+    fetch('https://projeto-mvc.onrender.com/get_brinquedos')
       .then((response) => response.json())
       .then((brinquedos) => {
 
@@ -228,7 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    await fetch('http://127.0.0.1:5000/atualizar_brinquedo', 
+    await fetch('https://projeto-mvc.onrender.com/atualizar_brinquedo', 
       {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
@@ -247,7 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function excluirUsuario(nome) {
     const msg = document.getElementById('msgCadastro');
     
-    await fetch('http://127.0.0.1:5000/get_usuarios')
+    await fetch('https://projeto-mvc.onrender.com/get_usuarios')
       .then((response) => response.json())
       .then((data) => {
         const usuarioExistente = data.find((usuario) => usuario.nome === nome);
@@ -260,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       setTimeout(() => msg.textContent = '', 3000);
 
-    await fetch('http://127.0.0.1:5000/remover_usuario', 
+    await fetch('https://projeto-mvc.onrender.com/remover_usuario', 
     {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
@@ -273,7 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function excluirBrinquedo(nome) {
     const msg = document.getElementById('msgCadastro');
     
-    await fetch('http://127.0.0.1:5000/get_brinquedos')
+    await fetch('https://projeto-mvc.onrender.com/get_brinquedos')
       .then((response) => response.json())
       .then((data) => {
         const brinquedoExistente = data.find((brinquedo) => brinquedo.nome === nome);
@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       setTimeout(() => msg.textContent = '', 3000);
 
-    await fetch('http://127.0.0.1:5000/remover_brinquedo', 
+    await fetch('https://projeto-mvc.onrender.com/remover_brinquedo', 
     {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
