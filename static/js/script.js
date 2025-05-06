@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
       spanTexto.innerHTML = `
         <input type="text" id="editNomeBrinquedo-${nome}" value="${brinquedo.nome}">
-        <input type="number" id="editPrecoBrinquedo-${nome}" value="${brinquedo.email}">
+        <input type="number" id="editPrecoBrinquedo-${nome}" value="${brinquedo.preco}">
       `;
  
       botoes.innerHTML = `
