@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const preco = document.getElementById('precoBrinquedo').value.trim();
         const msg = document.getElementById('msgBrinquedo');
   
-        fetch('https://projeto-mvc.onrender.com/get_usuarios') 
+        fetch('https://projeto-mvc.onrender.com/get_brinquedos') 
           .then((response) => response.json())
           .then((brinquedos) => {
   
