@@ -1,6 +1,6 @@
 # Projeto MVC
 
-Este é um projeto de site utilizando a arquitetura **MVC (Model-View-Controller)**, desenvolvido com **Python** e **Flask**. O objetivo é aplicar os conceitos de separação de responsabilidades, facilitando a manutenção e escalabilidade da aplicação. Esse projeto foi desenvolvimento para o trabalho da faculdade de ADS, campus Pedro II. Um site simples de uma loja de briquendos, onde é possivel cadastrar tanto o brinquedo e o cliente, também é possivel realizar o CRUD.
+Este é um projeto de site utilizando a arquitetura **MVC (Model-View-Controller)**, desenvolvido com **Python** e **Flask**. O objetivo é aplicar os conceitos de separação de responsabilidades, facilitando a manutenção e escalabilidade da aplicação. Esse projeto foi desenvolvimento para o trabalho da faculdade de ADS, campus Pedro II. Um site simples de uma loja de brinquedos, onde é possivel cadastrar tanto o brinquedo e o cliente, também é possivel realizar o CRUD.
 
 ---
 
